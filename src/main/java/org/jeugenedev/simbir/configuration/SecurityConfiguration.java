@@ -61,7 +61,10 @@ public class SecurityConfiguration {
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
-                    requests.requestMatchers("/accounts/**").authenticated().anyRequest().permitAll();
+                    requests
+                            .requestMatchers("/accounts/me").authenticated()
+                            .requestMatchers("/accounts/**").hasRole("ADMIN")
+                            .anyRequest().permitAll();
                 })
                 .build();
     }
@@ -83,7 +86,7 @@ public class SecurityConfiguration {
                         String username = accountToken.jwt().getClaim("username").asString();
                         String password = accountToken.jwt().getClaim("password").asString();
                         String role = accountToken.jwt().getClaim("role").asString();
-                        UserDetails userDetails = new User(new Account(username, password, false, Account.Role.valueOf(role)));
+                        UserDetails userDetails = new User(new Account(username, password, false, Account.Role.valueOf(role).getId()));
                         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
@@ -109,7 +112,7 @@ public class SecurityConfiguration {
 
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            return Collections.singleton(new SimpleGrantedAuthority(account.getRole().name()));
+            return Collections.singleton(new SimpleGrantedAuthority(Account.Role.byId(account.getRoleId()).name()));
         }
 
         @Override

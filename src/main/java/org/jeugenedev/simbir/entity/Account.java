@@ -1,7 +1,6 @@
 package org.jeugenedev.simbir.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,24 +13,40 @@ import java.util.List;
 @Table(name = "accounts")
 public class Account {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
     private long id;
-    private String username, password;
+    private String username;
+    private String password;
     private boolean banned;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(name = "role")
+    private long roleId = 1;
 
-    public Account(String username, String password, boolean banned, Role role) {
+    public Account(String username, String password, boolean banned, long roleId) {
         this.username = username;
         this.password = password;
         this.banned = banned;
-        this.role = role;
+        this.roleId = roleId;
     }
 
     public enum Role {
-        User, Admin;
+        ROLE_USER(1), ROLE_ADMIN(2);
 
-        public List<String> toList() {
+        private final long id;
+
+        Role(long id) {
+            this.id = id;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public static Role byId(long id) {
+            return Arrays.stream(Role.values()).filter(role -> role.id == id).findFirst().orElseThrow();
+        }
+
+        public static List<String> toList() {
             return Arrays.stream(Role.values()).map(Enum::name).toList();
         }
     }

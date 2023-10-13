@@ -1,4 +1,4 @@
-package org.jeugenedev.simbir;
+package org.jeugenedev.simbir.model;
 
 import org.jeugenedev.simbir.entity.Account;
 import org.jeugenedev.simbir.exceptions.AccountNotFoundException;
@@ -21,10 +21,7 @@ public class AuthModel {
 
     public Map<String, String> gen(String username, String password) {
         Account account = accountRepository.findByUsername(username).orElseThrow(AccountNotFoundException::new);
-        if(!account.getPassword().equals(password)) {
-            return Collections.emptyMap();
-        }
-        String token = jwtUtils.generateToken(username, password, account.getRole().name());
-        return Collections.singletonMap("token", token);
+        String token = jwtUtils.generateToken(username, password, Account.Role.byId(account.getRoleId()).name());
+        return Collections.singletonMap("token", account.getPassword().equals(password) ? token : "");
     }
 }
