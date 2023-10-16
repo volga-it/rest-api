@@ -62,7 +62,6 @@ public class SecurityConfiguration {
     public Filter jwtFilter() {
         return new OncePerRequestFilter() {
             private final Pattern TOKEN = Pattern.compile("Bearer (.*)");
-            private final String ROLE_KEY = "role";
 
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -75,7 +74,7 @@ public class SecurityConfiguration {
                     if (accountToken.verified()) {
                         String username = accountToken.jwt().getClaim(usernameParam).asString();
                         String password = accountToken.jwt().getClaim(passwordParam).asString();
-                        String role = accountToken.jwt().getClaim(ROLE_KEY).asString();
+                        String role = accountToken.jwt().getClaim(JWTUtils.KEY_ROLE).asString();
                         UserDetails userDetails = new User(new Account(username, password, false, Account.Role.valueOf(role).getId()));
                         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authentication);

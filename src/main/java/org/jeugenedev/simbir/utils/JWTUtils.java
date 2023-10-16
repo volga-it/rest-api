@@ -13,8 +13,14 @@ import java.util.Date;
 
 @Component
 public class JWTUtils {
+    public static final String KEY_ROLE = "user";
+
     @Value("${auth.secret}")
     private String secret;
+    @Value("${auth.username.param}")
+    private String usernameParam;
+    @Value("${auth.password.param}")
+    private String passwordParam;
     private Algorithm algorithm;
     private JWTVerifier verifier;
     private final String issuer = getClass().getPackage().getName();
@@ -31,9 +37,9 @@ public class JWTUtils {
                 .withIssuer(issuer)
                 .withExpiresAt(new Date(System.currentTimeMillis() + MINUTES_15_MS))
                 .withIssuedAt(new Date(System.currentTimeMillis()))
-                .withClaim("username", username)
-                .withClaim("password", password)
-                .withClaim("role", role)
+                .withClaim(usernameParam, username)
+                .withClaim(passwordParam, password)
+                .withClaim(KEY_ROLE, role)
                 .sign(algorithm);
     }
 
