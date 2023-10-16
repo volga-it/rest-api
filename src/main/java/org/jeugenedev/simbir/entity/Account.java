@@ -1,5 +1,6 @@
 package org.jeugenedev.simbir.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class Account {
     @Column(name = "account_id")
     private long id;
     private String username;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private boolean banned;
     @Column(name = "role")

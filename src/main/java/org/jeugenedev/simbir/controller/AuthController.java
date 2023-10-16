@@ -18,7 +18,7 @@ public class AuthController {
     }
 
     @PostMapping("/token")
-    public Map<String, String> gen(@RequestParam String username, @RequestParam String password) {
+    public AuthModel.AccountToken gen(@RequestParam String username, @RequestParam String password) {
         return authModel.gen(username, password);
     }
 }
