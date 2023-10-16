@@ -6,9 +6,6 @@ import org.jeugenedev.simbir.repository.AccountRepository;
 import org.jeugenedev.simbir.utils.JWTUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Map;
-
 @Component
 public class AuthModel {
     private final JWTUtils jwtUtils;
@@ -19,9 +16,13 @@ public class AuthModel {
         this.accountRepository = accountRepository;
     }
 
-    public Map<String, String> gen(String username, String password) {
+    public AccountToken gen(String username, String password) {
         Account account = accountRepository.findByUsername(username).orElseThrow(AccountNotFoundException::new);
         String token = jwtUtils.generateToken(username, password, Account.Role.byId(account.getRoleId()).name());
-        return Collections.singletonMap("token", account.getPassword().equals(password) ? token : "");
+        boolean predicate = account.getPassword().equals(password);
+        return new AccountToken(account.getId(), predicate ? token : "", predicate);
+    }
+
+    public record AccountToken(long accId, String token, boolean auth) {
     }
 }
