@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.PostConstruct;
+import org.jeugenedev.simbir.App;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -13,27 +14,30 @@ import java.util.Date;
 
 @Component
 public class JWTUtils {
-    public static final String KEY_ROLE = "user";
+    public static final String KEY_ROLE = "role";
+    private static long TOKEN_EXPIRED;
 
     @Value("${auth.secret}")
     private String secret;
     @Value("${auth.username.param}")
     private String usernameParam;
+    @Value("${jwt.tokens.expired.minutes}")
+    private int expiredToken;
     private Algorithm algorithm;
     private JWTVerifier verifier;
-    private final String issuer = getClass().getPackage().getName();
-    private final int MINUTES_15_MS = 1000 * 60 * 15;
+    private final String issuer = App.class.getPackage().getName();
 
     @PostConstruct
     public void init() {
         this.algorithm = Algorithm.HMAC256(secret);
         this.verifier = JWT.require(this.algorithm).withIssuer(this.issuer).build();
+        TOKEN_EXPIRED = 1000L * 60 * this.expiredToken;
     }
 
     public String generateToken(String username, String role) {
         return JWT.create()
                 .withIssuer(issuer)
-                .withExpiresAt(new Date(System.currentTimeMillis() + MINUTES_15_MS))
+                .withExpiresAt(new Date(System.currentTimeMillis() + TOKEN_EXPIRED))
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withClaim(usernameParam, username)
                 .withClaim(KEY_ROLE, role)
@@ -50,4 +54,8 @@ public class JWTUtils {
     }
 
     public record AccountToken(DecodedJWT jwt, boolean verified) {}
+
+    public static long getTokenExpired() {
+        return TOKEN_EXPIRED;
+    }
 }
