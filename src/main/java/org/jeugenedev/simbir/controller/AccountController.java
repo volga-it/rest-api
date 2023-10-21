@@ -3,9 +3,9 @@ package org.jeugenedev.simbir.controller;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.jeugenedev.simbir.entity.Account;
 import org.jeugenedev.simbir.model.AccountModel;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/accounts")
@@ -20,5 +20,10 @@ public class AccountController {
     @GetMapping("/me")
     public Account me() {
         return accountModel.me();
+    }
+
+    @PostMapping("/me/update")
+    public Account updateMe(@RequestBody Map<String, String> update) {
+        return accountModel.updateMe(update);
     }
 }

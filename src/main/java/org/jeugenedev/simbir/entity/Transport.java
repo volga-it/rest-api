@@ -2,6 +2,7 @@ package org.jeugenedev.simbir.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.jeugenedev.simbir.entity.converter.TransportTypeConverter;
 
 import java.util.Arrays;
 
@@ -14,25 +15,26 @@ public class Transport {
     @Column(name = "transport_id")
     private long id;
     private boolean rented;
+    @Convert(converter = TransportTypeConverter.class)
     @Column(name = "ttype")
-    private long typeId;
+    private Type type;
     private String model, color, identifier, description;
     private double latitude, longitude, price;
 
     public enum Type {
-        Car(1), Bike(2), Scooter(3);
+        Car(1), Bike(2), Scooter(3), All(4);
 
-        private final long id;
+        private final int id;
 
-        Type(long id) {
+        Type(int id) {
             this.id = id;
         }
 
-        public long getId() {
+        public int getId() {
             return id;
         }
 
-        public static Type byId(long id) {
+        public static Type byId(int id) {
             return Arrays.stream(Type.values()).filter(type -> type.id == id).findFirst().orElseThrow();
         }
     }

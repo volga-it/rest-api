@@ -18,7 +18,7 @@ public class AuthModel {
 
     public AccountToken gen(String username, String password) {
         Account account = accountRepository.findByUsername(username).orElseThrow(AccountNotFoundException::new);
-        String token = jwtUtils.generateToken(username, password, Account.Role.byId(account.getRoleId()).name());
+        String token = jwtUtils.generateToken(username, account.getRole().name());
         boolean predicate = account.getPassword().equals(password);
         return new AccountToken(account.getId(), predicate ? token : "", predicate);
     }

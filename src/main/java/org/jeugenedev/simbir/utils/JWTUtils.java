@@ -19,8 +19,6 @@ public class JWTUtils {
     private String secret;
     @Value("${auth.username.param}")
     private String usernameParam;
-    @Value("${auth.password.param}")
-    private String passwordParam;
     private Algorithm algorithm;
     private JWTVerifier verifier;
     private final String issuer = getClass().getPackage().getName();
@@ -32,13 +30,12 @@ public class JWTUtils {
         this.verifier = JWT.require(this.algorithm).withIssuer(this.issuer).build();
     }
 
-    public String generateToken(String username, String password, String role) {
+    public String generateToken(String username, String role) {
         return JWT.create()
                 .withIssuer(issuer)
                 .withExpiresAt(new Date(System.currentTimeMillis() + MINUTES_15_MS))
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .withClaim(usernameParam, username)
-                .withClaim(passwordParam, password)
                 .withClaim(KEY_ROLE, role)
                 .sign(algorithm);
     }

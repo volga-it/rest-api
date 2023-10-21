@@ -1,5 +1,0 @@
-POST http://localhost:8080/accounts
-Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJvcmcuamV1Z2VuZWRldi5zaW1iaXIudXRpbHMiLCJleHAiOjE2OTcyMjY0NDUsImlhdCI6MTY5NzIyNTU0NSwidXNlcm5hbWUiOiJZQ2I0QWZzbWdxMG8zVXBBZWkzM2VPczZsU3V0Skp3YiIsInBhc3N3b3JkIjoicXRhWmNOQnh1VkdEQkpVdjJhd2JnT09IMDM1dEZJQ1oiLCJyb2xlIjoiUk9MRV9BRE1JTiJ9.gyV0TdtV3Bv3B8ET2-KSV0gOYr5ereZjwNPR572DsbM
-
-{"username": "SuperUser1", "password": "SuperPassword"}

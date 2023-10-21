@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -35,8 +36,6 @@ import java.util.regex.Pattern;
 public class SecurityConfiguration {
     @Value("${auth.username.param}")
     private String usernameParam;
-    @Value("${auth.password.param}")
-    private String passwordParam;
     private final JWTUtils jwtUtils;
 
     public SecurityConfiguration(JWTUtils jwtUtils) {
@@ -52,7 +51,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
                     requests
-                            .requestMatchers("/accounts/me").authenticated()
+                            .requestMatchers("/accounts/me", "/accounts/me/update").authenticated()
                             .requestMatchers("/accounts/**").hasRole("ADMIN")
                             .anyRequest().permitAll();
                 })
@@ -66,16 +65,15 @@ public class SecurityConfiguration {
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
                     throws ServletException, IOException {
-                String jwtAuth = request.getHeader("Authorization");
+                String jwtAuth = request.getHeader(HttpHeaders.AUTHORIZATION);
                 Matcher token;
                 if (jwtAuth != null && (token = this.TOKEN.matcher(jwtAuth)).find()) {
                     String jwt = token.group(1);
                     JWTUtils.AccountToken accountToken = jwtUtils.verifyToken(jwt);
                     if (accountToken.verified()) {
                         String username = accountToken.jwt().getClaim(usernameParam).asString();
-                        String password = accountToken.jwt().getClaim(passwordParam).asString();
                         String role = accountToken.jwt().getClaim(JWTUtils.KEY_ROLE).asString();
-                        UserDetails userDetails = new User(new Account(username, password, false, Account.Role.valueOf(role).getId()));
+                        UserDetails userDetails = new User(new Account(username, null, false, Account.Role.valueOf(role)));
                         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
@@ -93,9 +91,13 @@ public class SecurityConfiguration {
             this.account = account;
         }
 
+        public long getId() {
+            return this.account.getId();
+        }
+
         @Override
         public Collection<? extends GrantedAuthority> getAuthorities() {
-            return Collections.singleton(new SimpleGrantedAuthority(Account.Role.byId(account.getRoleId()).name()));
+            return Collections.singleton(new SimpleGrantedAuthority(account.getRole().name()));
         }
 
         @Override

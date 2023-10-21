@@ -1,5 +1,5 @@
 CREATE TABLE account_role (
-    role_id BIGINT PRIMARY KEY NOT NULL,
+    role_id INT PRIMARY KEY NOT NULL,
     title VARCHAR(255) NOT NULL
 );
 
@@ -8,7 +8,7 @@ INSERT INTO account_role (role_id, title) VALUES
         (2, 'ROLE_ADMIN');
 
 CREATE TABLE transport_type (
-    type_id BIGINT PRIMARY KEY NOT NULL,
+    type_id INT PRIMARY KEY NOT NULL,
     title VARCHAR(255) NOT NULL
 );
 
@@ -18,12 +18,18 @@ INSERT INTO transport_type VALUES
         (3, 'Scooter'),
         (4, 'All');
 
+CREATE TABLE banned_tokens (
+    token_id UUID PRIMARY KEY NOT NULL,
+    token_base64_payload VARCHAR(1000) NOT NULL,
+    time TIMESTAMP NOT NULL
+);
+
 CREATE TABLE accounts (
     account_id BIGSERIAL PRIMARY KEY,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     banned BOOLEAN NOT NULL DEFAULT false,
-    role BIGINT NOT NULL DEFAULT 1,
+    role INT NOT NULL DEFAULT 1,
     FOREIGN KEY (role) REFERENCES account_role (role_id)
 );
 
@@ -32,7 +38,7 @@ INSERT INTO accounts (username, password, banned, role) VALUES ('YCb4Afsmgq0o3Up
 CREATE TABLE transports (
     transport_id BIGSERIAL PRIMARY KEY,
     rented BOOLEAN NOT NULL DEFAULT false,
-    ttype BIGINT NOT NULL,
+    ttype INT NOT NULL,
     model VARCHAR(255) NOT NULL,
     color VARCHAR(255) NOT NULL,
     identifier VARCHAR(255) NOT NULL,
@@ -48,6 +54,6 @@ CREATE TABLE rents (
     latitude REAL NOT NULL,
     longitude REAL NOT NULL,
     radius REAL NOT NULL,
-    rtype BIGINT NOT NULL,
+    rtype INT NOT NULL,
     FOREIGN KEY (rtype) REFERENCES transport_type (type_id)
 );
