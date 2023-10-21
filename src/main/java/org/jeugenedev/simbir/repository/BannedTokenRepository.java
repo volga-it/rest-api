@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface BannedTokenRepository extends JpaRepository<BannedToken, UUID> {
     void deleteByTimeLessThan(Timestamp time);
+    boolean existsByTokenBase64Payload(String payload);
 }

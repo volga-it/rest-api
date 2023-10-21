@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jeugenedev.simbir.entity.Account;
+import org.jeugenedev.simbir.repository.BannedTokenRepository;
 import org.jeugenedev.simbir.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -37,9 +40,11 @@ public class SecurityConfiguration {
     @Value("${auth.username.param}")
     private String usernameParam;
     private final JWTUtils jwtUtils;
+    private final BannedTokenRepository bannedTokenRepository;
 
-    public SecurityConfiguration(JWTUtils jwtUtils) {
+    public SecurityConfiguration(JWTUtils jwtUtils, BannedTokenRepository bannedTokenRepository) {
         this.jwtUtils = jwtUtils;
+        this.bannedTokenRepository = bannedTokenRepository;
     }
 
     @Bean
@@ -71,11 +76,15 @@ public class SecurityConfiguration {
                     String jwt = token.group(1);
                     JWTUtils.AccountToken accountToken = jwtUtils.verifyToken(jwt);
                     if (accountToken.verified()) {
-                        String username = accountToken.jwt().getClaim(usernameParam).asString();
-                        String role = accountToken.jwt().getClaim(JWTUtils.KEY_ROLE).asString();
-                        UserDetails userDetails = new User(new Account(username, null, false, Account.Role.valueOf(role)));
-                        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        String encodedPayload = Base64.getUrlEncoder().encodeToString(accountToken.jwt().getPayload().getBytes(StandardCharsets.UTF_8));
+                        boolean blocked = bannedTokenRepository.existsByTokenBase64Payload(encodedPayload);
+                        if (!blocked) {
+                            String username = accountToken.jwt().getClaim(usernameParam).asString();
+                            String role = accountToken.jwt().getClaim(JWTUtils.KEY_ROLE).asString();
+                            UserDetails userDetails = new User(new Account(username, null, false, Account.Role.valueOf(role)));
+                            Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                            SecurityContextHolder.getContext().setAuthentication(authentication);
+                        }
                     }
                 }
 

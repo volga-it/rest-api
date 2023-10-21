@@ -44,6 +44,15 @@ public class JWTUtils {
                 .sign(algorithm);
     }
 
+    public String getPayload(String token) throws JWTVerificationException {
+        DecodedJWT decodedJWT = verifyToken(token).jwt();
+        if (decodedJWT == null) {
+            throw new JWTVerificationException(null);
+        }
+
+        return decodedJWT.getPayload();
+    }
+
     public AccountToken verifyToken(String token) {
         try {
             DecodedJWT decodedJWT = this.verifier.verify(token);

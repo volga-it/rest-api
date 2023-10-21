@@ -20,7 +20,7 @@ INSERT INTO transport_type VALUES
 
 CREATE TABLE banned_tokens (
     token_id UUID PRIMARY KEY NOT NULL,
-    token_base64_payload VARCHAR(1000) NOT NULL,
+    token_base64_payload VARCHAR(1000) UNIQUE NOT NULL,
     time TIMESTAMP NOT NULL
 );
 
