@@ -1,11 +1,14 @@
 package org.jeugenedev.simbir.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jeugenedev.simbir.entity.converter.AccountRoleConverter;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -24,14 +27,27 @@ public class Account {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private boolean banned;
+    private BigDecimal balance = BigDecimal.ZERO;
     @Convert(converter = AccountRoleConverter.class)
-    @Column(name = "role")
     private Role role = Role.ROLE_USER;
+    @JsonIgnore
+    @OneToMany(mappedBy = "renter")
+    private List<Rent> rents;
 
-    public Account(String username, String password, boolean banned, Role role) {
+    public Account(long id, String username, String password, boolean banned, BigDecimal balance, Role role) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.banned = banned;
+        this.balance = balance;
+        this.role = role;
+    }
+
+    public Account(String username, String password, boolean banned, BigDecimal balance, Role role) {
+        this.username = username;
+        this.password = password;
+        this.banned = banned;
+        this.balance = balance;
         this.role = role;
     }
 

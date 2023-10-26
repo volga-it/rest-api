@@ -56,7 +56,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
                     requests
-                            .requestMatchers("/accounts/me", "/accounts/me/update").authenticated()
+                            .requestMatchers("/accounts/me", "/accounts/me/update", "/payments/**").authenticated()
                             .requestMatchers("/accounts/**").hasRole("ADMIN")
                             .anyRequest().permitAll();
                 })
@@ -81,7 +81,8 @@ public class SecurityConfiguration {
                         if (!blocked) {
                             String username = accountToken.jwt().getClaim(usernameParam).asString();
                             String role = accountToken.jwt().getClaim(JWTUtils.KEY_ROLE).asString();
-                            UserDetails userDetails = new User(new Account(username, null, false, Account.Role.valueOf(role)));
+                            long id = accountToken.jwt().getClaim(JWTUtils.KEY_USER_ID).asLong();
+                            UserDetails userDetails = new User(new Account(id, username, null, false, null, Account.Role.valueOf(role)));
                             Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         }
