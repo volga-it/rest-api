@@ -2,7 +2,8 @@ package org.jeugenedev.simbir.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.jeugenedev.simbir.entity.converter.TransportTypeConverter;
+
+import java.sql.Timestamp;
 
 @Data
 @Entity
@@ -12,8 +13,11 @@ public class Rent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rent_id")
     private long id;
-    private double latitude, longitude, radius;
-    @Convert(converter = TransportTypeConverter.class)
-    @Column(name = "rtype")
-    private Transport.Type type;
+    private Timestamp timeOpen, timeClose;
+    @ManyToOne
+    @JoinColumn(name = "transport_id", nullable = false)
+    private Transport transport;
+    @ManyToOne
+    @JoinColumn(name = "renter_id", nullable = false)
+    private Account renter;
 }

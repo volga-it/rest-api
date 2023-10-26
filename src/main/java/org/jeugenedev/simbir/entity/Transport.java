@@ -1,10 +1,12 @@
 package org.jeugenedev.simbir.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.jeugenedev.simbir.entity.converter.TransportTypeConverter;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Data
 @Entity
@@ -19,7 +21,14 @@ public class Transport {
     @Column(name = "ttype")
     private Type type;
     private String model, color, identifier, description;
-    private double latitude, longitude, price;
+    private double latitude, longitude;
+    @Column(name = "price_minute")
+    private double minutePrice;
+    @Column(name = "price_day")
+    private double dayPrice;
+    @JsonIgnore
+    @OneToMany(mappedBy = "transport")
+    private List<Rent> rents;
 
     public enum Type {
         Car(1), Bike(2), Scooter(3), All(4);

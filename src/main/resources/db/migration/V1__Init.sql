@@ -29,6 +29,7 @@ CREATE TABLE accounts (
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     banned BOOLEAN NOT NULL DEFAULT false,
+    balance DECIMAL DEFAULT 0,
     role INT NOT NULL DEFAULT 1,
     FOREIGN KEY (role) REFERENCES account_role (role_id)
 );
@@ -45,15 +46,20 @@ CREATE TABLE transports (
     description TEXT,
     latitude REAL NOT NULL,
     longitude REAL NOT NULL,
-    price REAL,
+    price_minute REAL,
+    price_day REAL,
     FOREIGN KEY (ttype) REFERENCES transport_type (type_id)
 );
 
+INSERT INTO transports (rented, ttype, model, color, identifier, description, latitude, longitude, price_minute, price_day)
+VALUES (false, 1, 'not model', 'not color', 'not know', 'not description', 0.0, 0.0, 0.0, 1.0);
+
 CREATE TABLE rents (
     rent_id BIGSERIAL PRIMARY KEY,
-    latitude REAL NOT NULL,
-    longitude REAL NOT NULL,
-    radius REAL NOT NULL,
-    rtype INT NOT NULL,
-    FOREIGN KEY (rtype) REFERENCES transport_type (type_id)
+    transport_id BIGINT NOT NULL,
+    renter_id BIGINT NOT NULL,
+    time_open TIMESTAMP NOT NULL,
+    time_close TIMESTAMP,
+    FOREIGN KEY (transport_id) REFERENCES transports (transport_id),
+    FOREIGN KEY (renter_id) REFERENCES accounts (account_id)
 );
