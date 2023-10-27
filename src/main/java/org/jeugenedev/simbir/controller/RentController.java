@@ -3,10 +3,7 @@ package org.jeugenedev.simbir.controller;
 import org.jeugenedev.simbir.entity.Rent;
 import org.jeugenedev.simbir.entity.Transport;
 import org.jeugenedev.simbir.model.RentModel;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,5 +30,12 @@ public class RentController {
     public List<Rent> historyMe(@RequestParam(required = false, defaultValue = "0") int page,
                                 @RequestParam(required = false, defaultValue = "10") int count) {
         return this.rentModel.myHistory(page, count);
+    }
+
+    @GetMapping("/history/transport/{transport}")
+    public List<Transport> transportHistory(@PathVariable Transport transport,
+                                            @RequestParam(required = false, defaultValue = "0") int page,
+                                            @RequestParam(required = false, defaultValue = "10") int count) {
+        return this.rentModel.transportHistory(transport, page, count);
     }
 }

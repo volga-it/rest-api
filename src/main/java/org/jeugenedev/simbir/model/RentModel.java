@@ -30,4 +30,10 @@ public class RentModel {
         SecurityConfiguration.User user = (SecurityConfiguration.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return rentRepository.findByRenter(new Account(user.getId()), PageRequest.of(page, count)).getContent();
     }
+
+    public List<Transport> transportHistory(Transport transport, int page, int count) {
+        return rentRepository.findByTransport(transport, PageRequest.of(page, count))
+                .map(Rent::getTransport)
+                .getContent();
+    }
 }
