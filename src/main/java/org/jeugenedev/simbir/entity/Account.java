@@ -34,6 +34,10 @@ public class Account {
     @OneToMany(mappedBy = "renter")
     private List<Rent> rents;
 
+    public Account(long id) {
+        this.id = id;
+    }
+
     public Account(long id, String username, String password, boolean banned, BigDecimal balance, Role role) {
         this.id = id;
         this.username = username;

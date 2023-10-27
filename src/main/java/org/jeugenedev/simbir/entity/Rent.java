@@ -2,6 +2,7 @@ package org.jeugenedev.simbir.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.sql.Timestamp;
 
@@ -14,9 +15,11 @@ public class Rent {
     @Column(name = "rent_id")
     private long id;
     private Timestamp timeOpen, timeClose;
+    @RestResource(exported = false)
     @ManyToOne
     @JoinColumn(name = "transport_id", nullable = false)
     private Transport transport;
+    @RestResource(exported = false)
     @ManyToOne
     @JoinColumn(name = "renter_id", nullable = false)
     private Account renter;
