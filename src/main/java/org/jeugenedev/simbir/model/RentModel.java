@@ -3,9 +3,11 @@ package org.jeugenedev.simbir.model;
 import jakarta.transaction.Transactional;
 import org.jeugenedev.simbir.configuration.SecurityConfiguration;
 import org.jeugenedev.simbir.entity.Account;
+import org.jeugenedev.simbir.entity.Payment;
 import org.jeugenedev.simbir.entity.Rent;
 import org.jeugenedev.simbir.entity.Transport;
 import org.jeugenedev.simbir.repository.AccountRepository;
+import org.jeugenedev.simbir.repository.PaymentRepository;
 import org.jeugenedev.simbir.repository.RentRepository;
 import org.jeugenedev.simbir.repository.TransportRepository;
 import org.springframework.data.domain.PageRequest;
@@ -22,11 +24,13 @@ public class RentModel {
     private final RentRepository rentRepository;
     private final TransportRepository transportRepository;
     private final AccountRepository accountRepository;
+    private final PaymentRepository paymentRepository;
 
-    public RentModel(RentRepository rentRepository, TransportRepository transportRepository, AccountRepository accountRepository) {
+    public RentModel(RentRepository rentRepository, TransportRepository transportRepository, AccountRepository accountRepository, PaymentRepository paymentRepository) {
         this.rentRepository = rentRepository;
         this.transportRepository = transportRepository;
         this.accountRepository = accountRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     public List<Transport> transport(double lat, double lon, double radius, Transport.Type type, int page, int count) {
@@ -73,10 +77,10 @@ public class RentModel {
         double subtractTime = rent.getTimeClose().getTime() - rent.getTimeOpen().getTime();
         int minutes = (int) Math.ceil(subtractTime / 1000 / 60);
         int days = (int) Math.ceil(minutes / 60.0 / 24);
-        account.setBalance(account.getBalance()
-                .subtract(rent.getRentType() == Rent.Type.Minutes
-                        ? BigDecimal.valueOf(rent.getTransport().getMinutePrice()).multiply(BigDecimal.valueOf(minutes))
-                        : BigDecimal.valueOf(rent.getTransport().getDayPrice()).multiply(BigDecimal.valueOf(days))));
+        BigDecimal amount = rent.getRentType() == Rent.Type.Minutes
+                ? BigDecimal.valueOf(rent.getTransport().getMinutePrice()).multiply(BigDecimal.valueOf(minutes))
+                : BigDecimal.valueOf(rent.getTransport().getDayPrice()).multiply(BigDecimal.valueOf(days));
+        paymentRepository.save(new Payment(account, amount, rent));
         accountRepository.save(account);
         transportRepository.save(rent.getTransport());
         rentRepository.save(rent);

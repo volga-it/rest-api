@@ -76,3 +76,13 @@ CREATE TABLE rents (
     FOREIGN KEY (renter_id) REFERENCES accounts (account_id),
     FOREIGN KEY (rent_type) REFERENCES rent_type (type_id)
 );
+
+CREATE TABLE payments (
+    payment_id UUID PRIMARY KEY,
+    done BOOLEAN DEFAULT false,
+    payer BIGINT NOT NULL,
+    amount DECIMAL NOT NULL,
+    rent UUID NOT NULL UNIQUE,
+    FOREIGN KEY (payer) REFERENCES accounts (account_id),
+    FOREIGN KEY (rent) REFERENCES rents (rent_id)
+);

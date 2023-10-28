@@ -38,6 +38,9 @@ public class Account {
     @JsonIgnore
     @OneToMany(mappedBy = "renter")
     private List<Rent> rents;
+    @JsonIgnore
+    @OneToMany(mappedBy = "payer")
+    private List<Payment> payments;
 
     public Account(long id) {
         this.id = id;
