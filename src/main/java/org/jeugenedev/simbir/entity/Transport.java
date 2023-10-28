@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.jeugenedev.simbir.entity.converter.TransportTypeConverter;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,6 +17,10 @@ public class Transport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transport_id")
     private long id;
+    @RestResource(exported = false)
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Account owner;
     private boolean rented;
     @Convert(converter = TransportTypeConverter.class)
     @Column(name = "ttype")

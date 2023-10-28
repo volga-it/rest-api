@@ -2,11 +2,12 @@ package org.jeugenedev.simbir.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jeugenedev.simbir.configuration.SecurityConfiguration;
 import org.jeugenedev.simbir.entity.converter.AccountRoleConverter;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -31,6 +32,10 @@ public class Account {
     @Convert(converter = AccountRoleConverter.class)
     private Role role = Role.ROLE_USER;
     @JsonIgnore
+    @RestResource(exported = false)
+    @OneToMany(mappedBy = "owner")
+    private List<Transport> transports;
+    @JsonIgnore
     @OneToMany(mappedBy = "renter")
     private List<Rent> rents;
 
@@ -53,6 +58,12 @@ public class Account {
         this.banned = banned;
         this.balance = balance;
         this.role = role;
+    }
+
+    public Account(SecurityConfiguration.User user) {
+        this.id = user.getId();
+        this.username = user.getUsername();
+        this.password = user.getPassword();
     }
 
     public void matchUpdate(Map<String, String> update) {

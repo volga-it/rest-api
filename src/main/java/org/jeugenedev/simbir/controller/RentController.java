@@ -3,6 +3,7 @@ package org.jeugenedev.simbir.controller;
 import org.jeugenedev.simbir.entity.Rent;
 import org.jeugenedev.simbir.entity.Transport;
 import org.jeugenedev.simbir.model.RentModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,5 +38,18 @@ public class RentController {
                                             @RequestParam(required = false, defaultValue = "0") int page,
                                             @RequestParam(required = false, defaultValue = "10") int count) {
         return this.rentModel.transportHistory(transport, page, count);
+    }
+
+    @PostMapping("/transport/{transport}")
+    public HttpStatus rentTransport(@PathVariable Transport transport,
+                                    @RequestParam(name = "rent_type") Rent.Type rentType) {
+        return this.rentModel.rentTransport(transport, rentType);
+    }
+
+    @PostMapping("/close/{rent}")
+    public HttpStatus rentClose(@PathVariable Rent rent,
+                                @RequestParam double lat,
+                                @RequestParam double lon) {
+        return this.rentModel.rentClose(rent, lat, lon);
     }
 }
