@@ -1,6 +1,7 @@
 package org.jeugenedev.simbir.controller;
 
 import org.jeugenedev.simbir.entity.Account;
+import org.jeugenedev.simbir.entity.Payment;
 import org.jeugenedev.simbir.model.PaymentModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,5 +21,10 @@ public class PaymentController {
     @PostMapping("/hesoyam/{account}")
     public HttpStatus hesoyam(@PathVariable Account account) {
         return paymentModel.hesoyam(account);
+    }
+
+    @PostMapping("/close/{payment}")
+    public HttpStatus close(@PathVariable Payment payment) {
+        return paymentModel.close(payment);
     }
 }
