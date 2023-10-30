@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.jeugenedev.simbir.configuration.SecurityConfiguration;
 import org.jeugenedev.simbir.entity.converter.AccountRoleConverter;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -19,7 +20,6 @@ import java.util.Map;
 @Entity
 @Table(name = "accounts")
 public class Account {
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
