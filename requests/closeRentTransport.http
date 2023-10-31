@@ -1,0 +1,5 @@
+POST http://localhost:8080/rents/close/null
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer null
+
+lat=1.1&lon=1.1

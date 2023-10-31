@@ -1,0 +1,5 @@
+POST http://localhost:8080/auth/token
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer null
+
+username=SuperUser123&password=SuperPassword

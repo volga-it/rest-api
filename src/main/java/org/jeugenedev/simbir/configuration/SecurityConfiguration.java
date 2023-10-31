@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -56,9 +57,28 @@ public class SecurityConfiguration {
                 .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> {
                     requests
-                            .requestMatchers("/accounts/me", "/accounts/me/update", "/payments/**").authenticated()
+                            .requestMatchers("/accounts/me", "/accounts/me/update").authenticated()
                             .requestMatchers("/accounts/**").hasRole("ADMIN")
-                            .anyRequest().permitAll();
+                            .requestMatchers(HttpMethod.POST, "/accounts").permitAll()
+                            .requestMatchers("/auth/token", "/auth/deny/*").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/transports", "/transports/*").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/transports").authenticated()
+                            .requestMatchers(HttpMethod.PUT, "/transports/*").authenticated()
+                            .requestMatchers(HttpMethod.DELETE, "/transports/*").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/rents/*", "/rents/history/me", "/rents/history/transport/*").authenticated()
+                            .requestMatchers("/rents/transport/*", "/close/*").authenticated()
+                            .requestMatchers("/rents/transport").permitAll()
+                            .requestMatchers("/payments/hesoyam/*", "/payments/close/*").authenticated()
+
+                            .requestMatchers("/api/Admin/Account", "/api/Admin/Account/*",
+                                    "/api/Admin/Account", "/api/Admin/Account/*", "/api/Admin/Account/*",
+                                    "/api/Admin/Transport", "/api/Admin/Transport/*", "/api/Admin/Transport",
+                                    "/api/Admin/Transport/*", "/api/Admin/Transport/*", "/api/Admin/Rent/*",
+                                    "/api/Admin/UserHistory/*", "/api/Admin/TransportHistory/*",
+                                    "/api/Admin/Rent", "/api/Admin/Rent/End/*", "/api/Admin/Rent/*",
+                                    "/api/Admin/Rent/*").hasRole("ADMIN")
+
+                            .anyRequest().authenticated();
                 })
                 .build();
     }

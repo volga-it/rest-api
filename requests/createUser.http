@@ -1,0 +1,5 @@
+POST http://localhost:8080/accounts
+Content-Type: application/json
+Authorization: Bearer null
+
+{"username": "SuperUser123", "password": "SuperPassword"}

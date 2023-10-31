@@ -1,0 +1,4 @@
+GET http://localhost:8080/accounts/me
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer null
+

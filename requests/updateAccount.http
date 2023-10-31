@@ -1,0 +1,5 @@
+PUT http://localhost:8080/accounts/5
+Authorization: Bearer null
+Content-Type: application/json
+
+{"username": "SuperUser1"}
