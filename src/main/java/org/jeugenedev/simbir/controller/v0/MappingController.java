@@ -163,16 +163,15 @@ public class MappingController {
         return "forward:/rents/close/" + rentId;
     }
 
+    @GetMapping("/api/Admin/UserHistory/{userId}")
+    public String adminRentUserHistory(@PathVariable long userId) {
+        return "forward:/rents/history/account/" + userId;
+    }
 
 
     /*
     * Не имплементировано в счет отсутствия необходимости
     */
-
-    @GetMapping("/api/Admin/UserHistory/{userId}")
-    public HttpStatus adminRentUserHistory(@PathVariable long userId) {
-        return HttpStatus.NOT_IMPLEMENTED;
-    }
 
     @PostMapping("/api/Admin/Rent")
     public HttpStatus adminRentCreate() {

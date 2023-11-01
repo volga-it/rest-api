@@ -65,7 +65,9 @@ public class SecurityConfiguration {
                             .requestMatchers(HttpMethod.POST, "/transports").authenticated()
                             .requestMatchers(HttpMethod.PUT, "/transports/*").authenticated()
                             .requestMatchers(HttpMethod.DELETE, "/transports/*").authenticated()
-                            .requestMatchers(HttpMethod.GET, "/rents/*", "/rents/history/me", "/rents/history/transport/*").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/rents/*", "/rents/history/me",
+                                    "/rents/history/transport/*").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/rents/history/account/*").hasRole("ADMIN")
                             .requestMatchers("/rents/transport/*", "/close/*").authenticated()
                             .requestMatchers("/rents/transport").permitAll()
                             .requestMatchers("/payments/hesoyam/*", "/payments/close/*").authenticated()

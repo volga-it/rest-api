@@ -42,10 +42,12 @@ public class RentModel {
         return rentRepository.findByRenter(new Account(user.getId()), PageRequest.of(page, count)).getContent();
     }
 
-    public List<Transport> transportHistory(Transport transport, int page, int count) {
-        return rentRepository.findByTransport(transport, PageRequest.of(page, count))
-                .map(Rent::getTransport)
-                .getContent();
+    public List<Rent> transportHistory(Transport transport, int page, int count) {
+        return rentRepository.findByTransport(transport, PageRequest.of(page, count)).getContent();
+    }
+
+    public List<Rent> accountRentHistory(Account account, int page, int count) {
+        return rentRepository.findByRenter(account, PageRequest.of(page, count)).getContent();
     }
 
     @Transactional
