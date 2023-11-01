@@ -6,6 +6,7 @@
 - PostgreSQL (>10)
 
 ## Сборка проекта
+> fast: [startup.bat](./startup.bat) **WINDOWS** or [startup.sh](./startup.sh) **LINUX**
 - ```mvn clean package```
 > Архив проекта после сборки будет находиться в папке ```target```
 
