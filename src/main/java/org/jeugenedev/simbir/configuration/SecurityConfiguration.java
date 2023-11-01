@@ -69,6 +69,7 @@ public class SecurityConfiguration {
                             .requestMatchers("/rents/transport/*", "/close/*").authenticated()
                             .requestMatchers("/rents/transport").permitAll()
                             .requestMatchers("/payments/hesoyam/*", "/payments/close/*").authenticated()
+                            .requestMatchers("/docs", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                             .requestMatchers("/api/Admin/Account", "/api/Admin/Account/*",
                                     "/api/Admin/Account", "/api/Admin/Account/*", "/api/Admin/Account/*",

@@ -43,7 +43,7 @@ CREATE TABLE accounts (
     FOREIGN KEY (role) REFERENCES account_role (role_id)
 );
 
-INSERT INTO accounts (username, password, banned, role) VALUES ('YCb4Afsmgq0o3UpAei33eOs6lSutJJwb', 'qtaZcNBxuVGDBJUv2awbgOOH035tFICZ', false, 2);
+INSERT INTO accounts (username, password, banned, role) VALUES ('YCb4Afsmgq0o3UpAei33eOs6lSutJJwb', '50cf8d9152884a5af4c66d3e9d248b7b6526c0e0259345970f09a20384f4be2f', false, 2);
 
 CREATE TABLE transports (
     transport_id BIGSERIAL PRIMARY KEY,
