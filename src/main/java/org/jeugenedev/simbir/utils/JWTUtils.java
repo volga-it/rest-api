@@ -55,6 +55,15 @@ public class JWTUtils {
         return decodedJWT.getPayload();
     }
 
+    public long getId(String token) {
+        DecodedJWT decodedJWT = verifyToken(token).jwt();
+        if (decodedJWT == null) {
+            throw new JWTVerificationException(null);
+        }
+
+        return decodedJWT.getClaim(KEY_USER_ID).asLong();
+    }
+
     public AccountToken verifyToken(String token) {
         try {
             DecodedJWT decodedJWT = this.verifier.verify(token);
